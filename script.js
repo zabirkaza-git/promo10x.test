@@ -137,28 +137,30 @@
 
 
   /* ── 6. VIDEO LAZY LOADING ───────────────────────── */
-  // If IntersectionObserver is available, only load video when visible
-  const videoPlayer = document.querySelector('.video-player');
-  if (videoPlayer && 'IntersectionObserver' in window) {
+  // If IntersectionObserver is available, only load videos when visible
+  const videoPlayers = document.querySelectorAll('.video-player');
+  if (videoPlayers.length > 0 && 'IntersectionObserver' in window) {
     const videoObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
-          // Trigger preload
-          if (videoPlayer.getAttribute('preload') === 'none') {
-            videoPlayer.setAttribute('preload', 'metadata');
+          var player = entry.target;
+          if (player.getAttribute('preload') === 'none') {
+            player.setAttribute('preload', 'metadata');
           }
-          videoObserver.unobserve(videoPlayer);
+          videoObserver.unobserve(player);
         }
       });
     }, { threshold: 0.25 });
 
-    videoObserver.observe(videoPlayer);
+    videoPlayers.forEach(function (player) {
+      videoObserver.observe(player);
+    });
   }
 
 
   /* ── 7. FADE-IN ANIMATION ON SCROLL ─────────────── */
   const animatedEls = document.querySelectorAll(
-    '.feature-card, .platform-card, .pricing-card, .video-card, .industry-card, .step-card, .faq-item'
+    '.feature-card, .platform-card, .pricing-card, .video-card, .poster-card, .industry-card, .step-card, .faq-item'
   );
 
   if ('IntersectionObserver' in window && animatedEls.length > 0) {
@@ -194,14 +196,53 @@
 
 
   /* ── 9. VIDEO ERROR HANDLING ─────────────────────── */
-  if (videoPlayer) {
-    videoPlayer.addEventListener('error', function () {
-      var fallback = videoPlayer.querySelector('.video-fallback') ||
-                     videoPlayer.parentElement.querySelector('.video-fallback');
+  videoPlayers.forEach(function (player) {
+    player.addEventListener('error', function () {
+      var fallback = player.querySelector('.video-fallback') ||
+                     player.parentElement.querySelector('.video-fallback');
       if (fallback) {
-        videoPlayer.style.display = 'none';
-        fallback.style.display    = 'flex';
+        player.style.display   = 'none';
+        fallback.style.display = 'flex';
       }
+    });
+  });
+
+
+  /* ── 9B. POSTER LIGHTBOX ─────────────────────────── */
+  var lightbox      = document.getElementById('posterLightbox');
+  var lightboxImg   = document.getElementById('posterLightboxImg');
+  var lightboxClose = document.getElementById('posterLightboxClose');
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.hidden = true;
+    lightboxImg.setAttribute('src', '');
+    document.body.style.overflow = '';
+  }
+
+  if (lightbox && lightboxImg) {
+    document.querySelectorAll('.poster-card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        var src = card.getAttribute('data-poster-src');
+        var img = card.querySelector('img');
+        if (!src) return;
+        lightboxImg.setAttribute('src', src);
+        lightboxImg.setAttribute('alt', img ? img.getAttribute('alt') : 'Design Poster');
+        lightbox.hidden = false;
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    if (lightboxClose) {
+      lightboxClose.addEventListener('click', closeLightbox);
+    }
+
+    lightbox.addEventListener('click', function (e) {
+      if (e.target === lightbox) { closeLightbox(); }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !lightbox.hidden) { closeLightbox(); }
     });
   }
 

@@ -1072,6 +1072,116 @@ button {
 .video-placeholder-inner span { font-size: 0.8rem; }
 
 /* ══════════════════════════════════════════════════
+   DESIGN POSTER GALLERY (Section 06B)
+   ══════════════════════════════════════════════════ */
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.poster-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.poster-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--clr-muted-gold);
+}
+
+.poster-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.poster-card:hover img {
+  transform: scale(1.03);
+}
+
+.poster-card__zoom {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(52, 75, 70, 0.88);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition);
+  pointer-events: none;
+}
+
+.poster-card:hover .poster-card__zoom,
+.poster-card:focus-visible .poster-card__zoom {
+  opacity: 1;
+}
+
+/* Lightbox modal */
+.poster-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(20, 26, 24, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.poster-lightbox[hidden] {
+  display: none;
+}
+
+.poster-lightbox__img {
+  max-width: 92vw;
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.poster-lightbox__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.poster-lightbox__close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ══════════════════════════════════════════════════
    INDUSTRY GALLERY (Section 07)
    ══════════════════════════════════════════════════ */
 .industry-grid {
@@ -1659,6 +1769,8 @@ button {
   .pricing-grid,
   .video-showcase { grid-template-columns: 1fr 1fr; }
 
+  .poster-grid    { grid-template-columns: repeat(3, 1fr); }
+
   .industry-grid  { grid-template-columns: repeat(3, 1fr); }
 
   .steps-grid { gap: 0; }
@@ -1706,6 +1818,8 @@ button {
   .pricing-grid,
   .video-showcase,
   .industry-grid  { grid-template-columns: 1fr; }
+
+  .poster-grid    { grid-template-columns: repeat(2, 1fr); gap: 14px; }
 
   /* Pricing */
   .pricing-card--featured { transform: none; }
